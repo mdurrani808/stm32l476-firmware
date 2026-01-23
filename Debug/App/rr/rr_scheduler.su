@@ -1,0 +1,3 @@
+../App/rr/rr_scheduler.c:22:13:RR_Register	16	static
+../App/rr/rr_scheduler.c:32:6:RR_Scheduler_Init	16	static
+../App/rr/rr_scheduler.c:49:6:RR_Scheduler_Tick	16	static

@@ -1,0 +1,2 @@
+../App/systems/blink_system.c:7:6:BlinkSystem_Init	1
+../App/systems/blink_system.c:12:6:BlinkSystem_Tick	2

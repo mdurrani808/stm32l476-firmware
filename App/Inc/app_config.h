@@ -11,7 +11,7 @@ extern "C" {
 #define SYSTEM_BLINK_ENABLED   (1)
 
 /* Blink configuration */
-#define BLINK_PERIOD_MS        (500U)
+#define BLINK_PERIOD_MS        (5000U)
 
 /* Onboard LED is PC5 */
 #define LED_GPIO_PORT          GPIOC

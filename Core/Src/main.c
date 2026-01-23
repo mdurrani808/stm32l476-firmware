@@ -2,12 +2,11 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Motherboard firmware entrypoint (mandatory init + round-robin)
+  * @brief          : Motherboard firmware entrypoint (mandatory init + RR app)
   ******************************************************************************
-  * Rules for this file:
+  * Rules:
   * - Only mandatory initialization (clock + MX_*_Init calls)
-  * - Enable/disable high-level systems
-  * - Run the round-robin scheduler
+  * - Start round-robin scheduler (App/)
   * - NO protocol logic here
   ******************************************************************************
   */
@@ -15,30 +14,29 @@
 
 #include "main.h"
 
-#include "gpio.h"
-#include "can.h"
-#include "usart.h"
+/* Platform (hardware init) */
+#include "../../Platform/Inc/gpio.h"
+#include "../../Platform/Inc/can.h"
+#include "../../Platform/Inc/usart.h"
 
-#include "app_config.h"
-#include "rr_scheduler.h"
+/* App (scheduler + systems) */
+#include "../../App/Inc/rr_scheduler.h"
+#include "../../App/Inc/app_config.h"
 
-/* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void Error_Handler(void);
 
-/* Private user code ---------------------------------------------------------*/
 int main(void)
 {
   HAL_Init();
-
   SystemClock_Config();
 
-  /* Mandatory peripheral initializations (NO protocols here) */
+  /* Mandatory peripheral init (no protocols here) */
   MX_GPIO_Init();
   MX_CAN1_Init();
   MX_UART4_Init();
 
-  /* Round-robin init */
+  /* App init */
   RR_Scheduler_Init();
 
   while (1)
@@ -47,24 +45,14 @@ int main(void)
   }
 }
 
-/**
-  * @brief System Clock Configuration
-  *
-  * Assumes motherboard uses external clock via HSE bypass.
-  * Adjust HSE settings in the .ioc if you change hardware.
-  */
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-  /* Enable power control clock */
   __HAL_RCC_PWR_CLK_ENABLE();
-
-  /* Voltage scaling: default */
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
-  /* HSE bypass as system clock source (no PLL here yet) */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
