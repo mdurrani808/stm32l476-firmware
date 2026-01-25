@@ -3,6 +3,14 @@
 #include <stddef.h>
 #include "app_config.h"
 
+#if SYSTEM_CAN_ENABLED
+#include "can_system.h"
+#endif
+
+#if SYSTEM_PCB_LED_ENABLED
+#include "pcb_led_system.h"
+#endif
+
 #if SYSTEM_BLINK_ENABLED
 #include "blink_system.h"
 #endif
@@ -32,6 +40,14 @@ static void RR_Register(rr_init_fn_t init_fn, rr_tick_fn_t tick_fn)
 void RR_Scheduler_Init(void)
 {
   s_system_count = 0;
+
+#if SYSTEM_CAN_ENABLED
+  RR_Register(CanSystem_Init, CanSystem_Tick);
+#endif
+
+#if SYSTEM_PCB_LED_ENABLED
+  RR_Register(PcbLedSystem_Init, PcbLedSystem_Tick);
+#endif
 
 #if SYSTEM_BLINK_ENABLED
   RR_Register(BlinkSystem_Init, BlinkSystem_Tick);

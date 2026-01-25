@@ -1,0 +1,6 @@
+../App/systems/can_system.c:13:13:CAN_ConfigAcceptAllFilter	48	static
+../App/systems/can_system.c:52:13:DBC_Handle_StepperCommand	24	static
+../App/systems/can_system.c:66:13:CAN_HandleReceivedFrame	16	static
+../App/systems/can_system.c:85:13:CAN_PollReceive	48	static
+../App/systems/can_system.c:99:6:CanSystem_Init	8	static
+../App/systems/can_system.c:109:6:CanSystem_Tick	8	static

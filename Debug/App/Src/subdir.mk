@@ -5,29 +5,23 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../App/systems/blink_system.c \
-../App/systems/can_system.c \
-../App/systems/pcb_led_system.c 
+../App/Src/can_params.c 
 
 OBJS += \
-./App/systems/blink_system.o \
-./App/systems/can_system.o \
-./App/systems/pcb_led_system.o 
+./App/Src/can_params.o 
 
 C_DEPS += \
-./App/systems/blink_system.d \
-./App/systems/can_system.d \
-./App/systems/pcb_led_system.d 
+./App/Src/can_params.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-App/systems/%.o App/systems/%.su App/systems/%.cyclo: ../App/systems/%.c App/systems/subdir.mk
+App/Src/%.o App/Src/%.su App/Src/%.cyclo: ../App/Src/%.c App/Src/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32L476xx -c -I../Core/Inc -I../App/Inc -I../Platform/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@"
 
-clean: clean-App-2f-systems
+clean: clean-App-2f-Src
 
-clean-App-2f-systems:
-	-$(RM) ./App/systems/blink_system.cyclo ./App/systems/blink_system.d ./App/systems/blink_system.o ./App/systems/blink_system.su ./App/systems/can_system.cyclo ./App/systems/can_system.d ./App/systems/can_system.o ./App/systems/can_system.su ./App/systems/pcb_led_system.cyclo ./App/systems/pcb_led_system.d ./App/systems/pcb_led_system.o ./App/systems/pcb_led_system.su
+clean-App-2f-Src:
+	-$(RM) ./App/Src/can_params.cyclo ./App/Src/can_params.d ./App/Src/can_params.o ./App/Src/can_params.su
 
-.PHONY: clean-App-2f-systems
+.PHONY: clean-App-2f-Src
 
