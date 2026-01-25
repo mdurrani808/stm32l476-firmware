@@ -555,6 +555,7 @@ void can_system_controller(void)
 
   /* Fallback polling:
    * If NVIC/IRQ handler isn't wired, this still drains RX and updates params. */
+  // NOTE: This is a fallback to make sure that fifi0 was emptied. i.e. we want to check for CAN messages left in the buffer if they wern't caught by the interrupt for some reason.
   process_rx_fifo0();
 
   /* TX path later; currently no send signals configured */

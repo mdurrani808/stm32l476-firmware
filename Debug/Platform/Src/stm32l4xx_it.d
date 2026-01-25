@@ -27,7 +27,7 @@ Platform/Src/stm32l4xx_it.o: ../Platform/Src/stm32l4xx_it.c \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_pwr_ex.h \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart_ex.h \
- ../Core/Inc/stm32l4xx_it.h
+ ../Core/Inc/stm32l4xx_it.h ../Platform/Inc/can.h
 ../Core/Inc/main.h:
 ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h:
 ../Core/Inc/stm32l4xx_hal_conf.h:
@@ -58,3 +58,4 @@ Platform/Src/stm32l4xx_it.o: ../Platform/Src/stm32l4xx_it.c \
 ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h:
 ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart_ex.h:
 ../Core/Inc/stm32l4xx_it.h:
+../Platform/Inc/can.h:
