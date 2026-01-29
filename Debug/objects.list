@@ -1,3 +1,4 @@
+"./App/Src/can_config.o"
 "./App/Src/can_params.o"
 "./App/dbc/can_dbc_text.o"
 "./App/rr/rr_scheduler.o"

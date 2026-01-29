@@ -95,7 +95,7 @@ The CAN system is **generic and DBC‑driven**:
 - Decodes CAN RX frames using DBC metadata
 - Updates parameters **inside the CAN RX interrupt**
 - Does **no application logic**
-- CAN TX will be handled here later (currently disabled)
+- CAN TX is handled on the CAN system's turn in the round-robin when application code requests parameter updates (see TX section below)
 
 > The CAN system **never knows what the signals mean**.
 
@@ -129,7 +129,46 @@ bool CanParams_GetInt32(...);
 bool CanParams_GetFloat(...);
 ```
 
-A parameter is considered **valid only after at least one CAN frame updates it**.
+All parameters are created in memory at CAN startup (from the DBC), and a parameter is considered **valid only after at least one CAN frame updates it**.
+
+#### Global CAN State Flags
+
+Two global boolean parameters are always created at CAN startup:
+
+- `pending_inbox` – set to `true` if *any* decoded CAN RX frame updated at least one parameter since the last CAN system tick.  
+  On the next CAN system tick, if no new updates occurred, it is cleared to `false`.
+- `pending_outbox` – set to `true` when *any system* requests a parameter change that should be transmitted onto the bus.
+
+These flags allow other systems to cheaply detect bus activity without scanning every parameter.
+
+#### Transmitting Parameter Changes (DBC-driven TX)
+
+Any system may request that a DBC-defined signal be transmitted by calling:
+
+```c
+#include "can_system.h"
+
+CanSystem_SetBool("STEPPER_COMMAND.Set_LED", true);
+CanSystem_SetInt32("SOME_MESSAGE.SomeCounter", 123);
+CanSystem_SetFloat("SOME_MESSAGE.SomeValue", 12.34f);
+```
+
+Rules:
+
+- Calling `CanSystem_Set*()` updates the stored parameter value and marks the owning DBC message as **dirty**.
+- On the CAN system's next round-robin tick, all dirty messages are encoded and transmitted, and `pending_outbox` is cleared.
+- Messages are **not** transmitted due to values learned from CAN RX (RX updates do not mark TX dirty), preventing echo/loopback.
+
+#### Optional CAN RX Allowlist Filter
+
+You can optionally restrict which CAN arbitration IDs are decoded into parameters.
+
+Configure the allowlist in:
+
+- `App/Inc/can_config.h`
+
+Provide a list of 11-bit standard IDs (hex) that should be processed. If the list is empty, all standard IDs are accepted (default behavior).
+
 
 ---
 
