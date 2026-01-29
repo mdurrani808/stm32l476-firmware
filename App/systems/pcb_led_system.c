@@ -48,7 +48,6 @@ void pcb_led_system_controller(void)
 
   if (!s_has_sent || (desired_out != s_last_desired))
   {
-    (void)CanSystem_SetBool("SERVO_PCB_R.servo_type_0", desired_out);
     s_last_desired = desired_out;
     s_has_sent = 1U;
   }

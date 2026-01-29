@@ -957,54 +957,55 @@ void can_system_controller(void)
 
 bool CanSystem_SetBool(const char* full_name, bool value)
 {
-  if (full_name == NULL)
-    return false;
+    if (full_name == NULL)
+        return false;
 
-  if (strcmp(full_name, "pending_inbox") == 0 || strcmp(full_name, "pending_outbox") == 0)
-    return false;
+    if (strcmp(full_name, "pending_inbox") == 0 ||
+        strcmp(full_name, "pending_outbox") == 0)
+        return false;
 
-  if (!mark_dirty_for_full_name(full_name))
-    return false;
+    if (!mark_dirty_for_full_name(full_name))
+        return false;
 
-  if (!CanParams_SetBool(full_name, value))
-    return false;
+    /* Force-set: ignore "no change" result */
+    (void)CanParams_SetBool(full_name, value);
 
-  (void)CanParams_SetBool("pending_outbox", true);
-  return true;
+    (void)CanParams_SetBool("pending_outbox", true);
+    return true;
 }
 
 bool CanSystem_SetInt32(const char* full_name, int32_t value)
 {
-  if (full_name == NULL)
-    return false;
+    if (full_name == NULL) return false;
+    if (strcmp(full_name, "pending_inbox") == 0 || strcmp(full_name, "pending_outbox") == 0) return false;
 
-  if (strcmp(full_name, "pending_inbox") == 0 || strcmp(full_name, "pending_outbox") == 0)
-    return false;
+    if (!mark_dirty_for_full_name(full_name))
+        return false;
 
-  if (!mark_dirty_for_full_name(full_name))
-    return false;
+    // Set param, but don't treat "no change" as failure
+    (void)CanParams_SetInt32(full_name, value);
 
-  if (!CanParams_SetInt32(full_name, value))
-    return false;
-
-  (void)CanParams_SetBool("pending_outbox", true);
-  return true;
+    (void)CanParams_SetBool("pending_outbox", true);
+    return true;
 }
+
 
 bool CanSystem_SetFloat(const char* full_name, float value)
 {
-  if (full_name == NULL)
-    return false;
+    if (full_name == NULL)
+        return false;
 
-  if (strcmp(full_name, "pending_inbox") == 0 || strcmp(full_name, "pending_outbox") == 0)
-    return false;
+    if (strcmp(full_name, "pending_inbox") == 0 ||
+        strcmp(full_name, "pending_outbox") == 0)
+        return false;
 
-  if (!mark_dirty_for_full_name(full_name))
-    return false;
+    if (!mark_dirty_for_full_name(full_name))
+        return false;
 
-  if (!CanParams_SetFloat(full_name, value))
-    return false;
+    /* Force-set: ignore "no change" result */
+    (void)CanParams_SetFloat(full_name, value);
 
-  (void)CanParams_SetBool("pending_outbox", true);
-  return true;
+    (void)CanParams_SetBool("pending_outbox", true);
+    return true;
 }
+

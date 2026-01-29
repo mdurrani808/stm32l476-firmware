@@ -3,6 +3,8 @@
 "./App/dbc/can_dbc_text.o"
 "./App/rr/rr_scheduler.o"
 "./App/systems/can_system.o"
+"./App/systems/ex_system.o"
+"./App/systems/heartbeat_system.o"
 "./App/systems/pcb_led_system.o"
 "./Core/Src/error_handler.o"
 "./Core/Src/main.o"

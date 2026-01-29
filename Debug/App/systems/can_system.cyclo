@@ -22,5 +22,5 @@
 ../App/systems/can_system.c:877:13:transmit_dirty_messages	7
 ../App/systems/can_system.c:922:6:can_system_controller	5
 ../App/systems/can_system.c:958:6:CanSystem_SetBool	6
-../App/systems/can_system.c:976:6:CanSystem_SetInt32	6
-../App/systems/can_system.c:994:6:CanSystem_SetFloat	6
+../App/systems/can_system.c:976:6:CanSystem_SetInt32	5
+../App/systems/can_system.c:992:6:CanSystem_SetFloat	6
