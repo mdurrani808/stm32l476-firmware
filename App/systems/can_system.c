@@ -12,7 +12,7 @@
 #include "can_params.h"
 #include "can_config.h"
 
-#define MAX_DBC_MSGS  (128U)
+#define MAX_DBC_MSGS  (32U)
 #define MAX_DBC_SIGS  (256U)
 #define MAX_MUX_PAGE_CAP (64U)
 

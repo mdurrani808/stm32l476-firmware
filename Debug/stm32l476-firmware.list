@@ -21,9 +21,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   8 .data         00000370  20000000  0800e020  00010000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          00015388  20000370  0800e390  00010370  2**2
+  9 .bss          0000fb68  20000370  0800e390  00010370  2**2
                   ALLOC
- 10 ._user_heap_stack 00000600  200156f8  0800e390  000106f8  2**0
+ 10 ._user_heap_stack 00000600  2000fed8  0800e390  00010ed8  2**0
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  00010370  2**0
                   CONTENTS, READONLY
@@ -3420,7 +3420,7 @@ static void can_apply_filters(void)
  8001c90:	bd80      	pop	{r7, pc}
  8001c92:	bf00      	nop
  8001c94:	0800db60 	.word	0x0800db60
- 8001c98:	200154f8 	.word	0x200154f8
+ 8001c98:	2000fcd8 	.word	0x2000fcd8
  8001c9c:	0800db60 	.word	0x0800db60
 
 08001ca0 <tx_pending_clear>:
@@ -3436,7 +3436,7 @@ static void tx_pending_clear(uint32_t mi)
  8001ca6:	6078      	str	r0, [r7, #4]
   if (mi < MAX_DBC_MSGS)
  8001ca8:	687b      	ldr	r3, [r7, #4]
- 8001caa:	2b3f      	cmp	r3, #63	@ 0x3f
+ 8001caa:	2b1f      	cmp	r3, #31
  8001cac:	d808      	bhi.n	8001cc0 <tx_pending_clear+0x20>
   {
     s_tx_pending[mi].pending_mux_count = 0U;
@@ -3456,7 +3456,7 @@ static void tx_pending_clear(uint32_t mi)
  8001cc4:	46bd      	mov	sp, r7
  8001cc6:	f85d 7b04 	ldr.w	r7, [sp], #4
  8001cca:	4770      	bx	lr
- 8001ccc:	200151dc 	.word	0x200151dc
+ 8001ccc:	2000fadc 	.word	0x2000fadc
 
 08001cd0 <tx_pending_add>:
 
@@ -3544,8 +3544,8 @@ static bool tx_pending_add(uint32_t mi, uint8_t mux_val)
  8001d44:	46bd      	mov	sp, r7
  8001d46:	f85d 7b04 	ldr.w	r7, [sp], #4
  8001d4a:	4770      	bx	lr
- 8001d4c:	200151d4 	.word	0x200151d4
- 8001d50:	200151dc 	.word	0x200151dc
+ 8001d4c:	2000fad4 	.word	0x2000fad4
+ 8001d50:	2000fadc 	.word	0x2000fadc
 
 08001d54 <tx_any_pending>:
 
@@ -3592,8 +3592,8 @@ static bool tx_any_pending(void)
  8001d90:	f85d 7b04 	ldr.w	r7, [sp], #4
  8001d94:	4770      	bx	lr
  8001d96:	bf00      	nop
- 8001d98:	200151dc 	.word	0x200151dc
- 8001d9c:	200151d4 	.word	0x200151d4
+ 8001d98:	2000fadc 	.word	0x2000fadc
+ 8001d9c:	2000fad4 	.word	0x2000fad4
 
 08001da0 <find_msg_index_by_id>:
 
@@ -3642,7 +3642,7 @@ static int find_msg_index_by_id(uint32_t msg_id)
  8001de2:	f85d 7b04 	ldr.w	r7, [sp], #4
  8001de6:	4770      	bx	lr
  8001de8:	20004fd4 	.word	0x20004fd4
- 8001dec:	200151d4 	.word	0x200151d4
+ 8001dec:	2000fad4 	.word	0x2000fad4
 
 08001df0 <find_msg_index_by_name>:
 
@@ -3701,7 +3701,7 @@ static int find_msg_index_by_name(const char* msg_name)
  8001e44:	46bd      	mov	sp, r7
  8001e46:	bd80      	pop	{r7, pc}
  8001e48:	20004fd4 	.word	0x20004fd4
- 8001e4c:	200151d4 	.word	0x200151d4
+ 8001e4c:	2000fad4 	.word	0x2000fad4
 
 08001e50 <find_sig_index_by_full_name>:
 
@@ -3758,8 +3758,8 @@ static int find_sig_index_by_full_name(const char* full_name)
  8001e9e:	3710      	adds	r7, #16
  8001ea0:	46bd      	mov	sp, r7
  8001ea2:	bd80      	pop	{r7, pc}
- 8001ea4:	2000fdd4 	.word	0x2000fdd4
- 8001ea8:	200151d8 	.word	0x200151d8
+ 8001ea4:	2000a6d4 	.word	0x2000a6d4
+ 8001ea8:	2000fad8 	.word	0x2000fad8
 
 08001eac <build_full_name>:
 
@@ -4531,7 +4531,7 @@ static void dbc_parse_reset(void)
  8002366:	3301      	adds	r3, #1
  8002368:	607b      	str	r3, [r7, #4]
  800236a:	687b      	ldr	r3, [r7, #4]
- 800236c:	2b3f      	cmp	r3, #63	@ 0x3f
+ 800236c:	2b1f      	cmp	r3, #31
  800236e:	d9b5      	bls.n	80022dc <dbc_parse_reset+0x18>
   }
 
@@ -4646,10 +4646,10 @@ static void dbc_parse_reset(void)
  8002446:	46bd      	mov	sp, r7
  8002448:	bd80      	pop	{r7, pc}
  800244a:	bf00      	nop
- 800244c:	200151d4 	.word	0x200151d4
- 8002450:	200151d8 	.word	0x200151d8
+ 800244c:	2000fad4 	.word	0x2000fad4
+ 8002450:	2000fad8 	.word	0x2000fad8
  8002454:	20004fd4 	.word	0x20004fd4
- 8002458:	2000fdd4 	.word	0x2000fdd4
+ 8002458:	2000a6d4 	.word	0x2000a6d4
 
 0800245c <dbc_finalize_event_params_and_links>:
 
@@ -4936,10 +4936,10 @@ static bool dbc_finalize_event_params_and_links(void)
  800263c:	46bd      	mov	sp, r7
  800263e:	bd80      	pop	{r7, pc}
  8002640:	20004fd4 	.word	0x20004fd4
- 8002644:	2000fdd4 	.word	0x2000fdd4
- 8002648:	200151d8 	.word	0x200151d8
+ 8002644:	2000a6d4 	.word	0x2000a6d4
+ 8002648:	2000fad8 	.word	0x2000fad8
  800264c:	0800d6e8 	.word	0x0800d6e8
- 8002650:	200151d4 	.word	0x200151d4
+ 8002650:	2000fad4 	.word	0x2000fad4
 
 08002654 <dbc_parse_all>:
 
@@ -5259,7 +5259,7 @@ static bool dbc_parse_all(void)
       if (s_msg_count >= MAX_DBC_MSGS)
  80028de:	4b2f      	ldr	r3, [pc, #188]	@ (800299c <dbc_parse_all+0x348>)
  80028e0:	681b      	ldr	r3, [r3, #0]
- 80028e2:	2b3f      	cmp	r3, #63	@ 0x3f
+ 80028e2:	2b1f      	cmp	r3, #31
  80028e4:	d901      	bls.n	80028ea <dbc_parse_all+0x296>
       {
         return false;
@@ -5343,7 +5343,7 @@ static bool dbc_parse_all(void)
  8002990:	0800d70c 	.word	0x0800d70c
  8002994:	20000000 	.word	0x20000000
  8002998:	0800d71c 	.word	0x0800d71c
- 800299c:	200151d4 	.word	0x200151d4
+ 800299c:	2000fad4 	.word	0x2000fad4
  80029a0:	20004fd4 	.word	0x20004fd4
     }
     else if (strncmp(lp, "SG_ ", 4) == 0)
@@ -5730,7 +5730,7 @@ static bool dbc_parse_all(void)
  8002cfe:	bf00      	nop
  8002d00:	0800d724 	.word	0x0800d724
  8002d04:	0800d72c 	.word	0x0800d72c
- 8002d08:	200151d8 	.word	0x200151d8
+ 8002d08:	2000fad8 	.word	0x2000fad8
       }
 
       dbc_sig_t* s = &s_sigs[s_sig_count];
@@ -5987,8 +5987,8 @@ static bool dbc_parse_all(void)
  8002ee6:	46bd      	mov	sp, r7
  8002ee8:	bd80      	pop	{r7, pc}
  8002eea:	bf00      	nop
- 8002eec:	200151d8 	.word	0x200151d8
- 8002ef0:	2000fdd4 	.word	0x2000fdd4
+ 8002eec:	2000fad8 	.word	0x2000fad8
+ 8002ef0:	2000a6d4 	.word	0x2000a6d4
  8002ef4:	20004fd4 	.word	0x20004fd4
 
 08002ef8 <extract_bits_le>:
@@ -6783,9 +6783,9 @@ static void handle_rx_frame(uint32_t std_id, const uint8_t* data, uint8_t dlc)
  800346c:	e017      	b.n	800349e <handle_rx_frame+0x322>
  800346e:	bf00      	nop
  8003470:	20004fd4 	.word	0x20004fd4
- 8003474:	2000fdd4 	.word	0x2000fdd4
- 8003478:	2001541c 	.word	0x2001541c
- 800347c:	200151d8 	.word	0x200151d8
+ 8003474:	2000a6d4 	.word	0x2000a6d4
+ 8003478:	2000fbfc 	.word	0x2000fbfc
+ 800347c:	2000fad8 	.word	0x2000fad8
  8003480:	6abb      	ldr	r3, [r7, #40]	@ 0x28
  8003482:	ee07 3a90 	vmov	s15, r3
  8003486:	eeb8 7ae7 	vcvt.f32.s32	s14, s15
@@ -6887,8 +6887,8 @@ static void handle_rx_frame(uint32_t std_id, const uint8_t* data, uint8_t dlc)
  8003536:	3760      	adds	r7, #96	@ 0x60
  8003538:	46bd      	mov	sp, r7
  800353a:	bd80      	pop	{r7, pc}
- 800353c:	2001541c 	.word	0x2001541c
- 8003540:	200151d8 	.word	0x200151d8
+ 800353c:	2000fbfc 	.word	0x2000fbfc
+ 8003540:	2000fad8 	.word	0x2000fad8
 
 08003544 <process_rx_fifo0>:
 
@@ -6944,7 +6944,7 @@ static void process_rx_fifo0(void)
  8003586:	3728      	adds	r7, #40	@ 0x28
  8003588:	46bd      	mov	sp, r7
  800358a:	bd80      	pop	{r7, pc}
- 800358c:	200154f8 	.word	0x200154f8
+ 800358c:	2000fcd8 	.word	0x2000fcd8
 
 08003590 <HAL_CAN_RxFifo0MsgPendingCallback>:
 
@@ -6970,7 +6970,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan)
  80035aa:	46bd      	mov	sp, r7
  80035ac:	bd80      	pop	{r7, pc}
  80035ae:	bf00      	nop
- 80035b0:	200154f8 	.word	0x200154f8
+ 80035b0:	2000fcd8 	.word	0x2000fcd8
 
 080035b4 <encode_raw_from_param>:
 /* =========================
@@ -7365,11 +7365,11 @@ static bool transmit_one(uint32_t mi, uint8_t mux_to_send)
  800384e:	3748      	adds	r7, #72	@ 0x48
  8003850:	46bd      	mov	sp, r7
  8003852:	bd80      	pop	{r7, pc}
- 8003854:	200151d4 	.word	0x200151d4
+ 8003854:	2000fad4 	.word	0x2000fad4
  8003858:	20004fd4 	.word	0x20004fd4
- 800385c:	2000fdd4 	.word	0x2000fdd4
- 8003860:	200151d8 	.word	0x200151d8
- 8003864:	200154f8 	.word	0x200154f8
+ 800385c:	2000a6d4 	.word	0x2000a6d4
+ 8003860:	2000fad8 	.word	0x2000fad8
+ 8003864:	2000fcd8 	.word	0x2000fcd8
 
 08003868 <transmit_pending_messages>:
 
@@ -7543,9 +7543,9 @@ static void transmit_pending_messages(void)
  8003962:	3720      	adds	r7, #32
  8003964:	46bd      	mov	sp, r7
  8003966:	bd80      	pop	{r7, pc}
- 8003968:	200151dc 	.word	0x200151dc
+ 8003968:	2000fadc 	.word	0x2000fadc
  800396c:	20004fd4 	.word	0x20004fd4
- 8003970:	200151d4 	.word	0x200151d4
+ 8003970:	2000fad4 	.word	0x2000fad4
  8003974:	0800d70c 	.word	0x0800d70c
 
 08003978 <can_system_controller>:
@@ -7628,9 +7628,9 @@ void can_system_controller(void)
 }
  80039d8:	bf00      	nop
  80039da:	bd80      	pop	{r7, pc}
- 80039dc:	2001541d 	.word	0x2001541d
- 80039e0:	200154f8 	.word	0x200154f8
- 80039e4:	2001541c 	.word	0x2001541c
+ 80039dc:	2000fbfd 	.word	0x2000fbfd
+ 80039e0:	2000fcd8 	.word	0x2000fcd8
+ 80039e4:	2000fbfc 	.word	0x2000fbfc
  80039e8:	0800d6fc 	.word	0x0800d6fc
  80039ec:	0800d70c 	.word	0x0800d70c
 
@@ -7931,8 +7931,8 @@ bool CanSystem_Send(const char* full_name)
  8003be4:	0800d6fc 	.word	0x0800d6fc
  8003be8:	0800d70c 	.word	0x0800d70c
  8003bec:	20004fd4 	.word	0x20004fd4
- 8003bf0:	2000fdd4 	.word	0x2000fdd4
- 8003bf4:	200151d4 	.word	0x200151d4
+ 8003bf0:	2000a6d4 	.word	0x2000a6d4
+ 8003bf4:	2000fad4 	.word	0x2000fad4
 
 08003bf8 <CanSystem_SetInt32>:
 
@@ -8033,7 +8033,7 @@ static void init_once(void)
  8003c76:	bf00      	nop
  8003c78:	bd80      	pop	{r7, pc}
  8003c7a:	bf00      	nop
- 8003c7c:	20015420 	.word	0x20015420
+ 8003c7c:	2000fc00 	.word	0x2000fc00
 
 08003c80 <heartbeat_system_controller>:
 
@@ -8115,9 +8115,9 @@ void heartbeat_system_controller(void)
  8003ce6:	46bd      	mov	sp, r7
  8003ce8:	bd80      	pop	{r7, pc}
  8003cea:	bf00      	nop
- 8003cec:	2001541e 	.word	0x2001541e
+ 8003cec:	2000fbfe 	.word	0x2000fbfe
  8003cf0:	0800d730 	.word	0x0800d730
- 8003cf4:	20015420 	.word	0x20015420
+ 8003cf4:	2000fc00 	.word	0x2000fc00
  8003cf8:	0800d750 	.word	0x0800d750
 
 08003cfc <init_once>:
@@ -8243,11 +8243,11 @@ void pcb_led_system_controller(void)
  8003d9a:	46bd      	mov	sp, r7
  8003d9c:	bd80      	pop	{r7, pc}
  8003d9e:	bf00      	nop
- 8003da0:	20015424 	.word	0x20015424
+ 8003da0:	2000fc04 	.word	0x2000fc04
  8003da4:	0800d770 	.word	0x0800d770
  8003da8:	48000800 	.word	0x48000800
- 8003dac:	20015425 	.word	0x20015425
- 8003db0:	20015426 	.word	0x20015426
+ 8003dac:	2000fc05 	.word	0x2000fc05
+ 8003db0:	2000fc06 	.word	0x2000fc06
 
 08003db4 <ServoSystem_OnSetZero>:
 static int32_t s_last_general[SERVO_CAN_COUNT];
@@ -8561,7 +8561,7 @@ static void set_pwm_us(uint8_t port, uint16_t pwm_us)
  8003fc4:	bd80      	pop	{r7, pc}
  8003fc6:	bf00      	nop
  8003fc8:	20000004 	.word	0x20000004
- 8003fcc:	20015428 	.word	0x20015428
+ 8003fcc:	2000fc08 	.word	0x2000fc08
 
 08003fd0 <compute_pwm_us_for_position>:
 
@@ -9420,12 +9420,12 @@ static void init_internal_once(void)
  8004618:	2300      	movs	r3, #0
  800461a:	f887 302a 	strb.w	r3, [r7, #42]	@ 0x2a
  800461e:	e039      	b.n	8004694 <init_internal_once+0x32c>
- 8004620:	20015428 	.word	0x20015428
- 8004624:	200154a9 	.word	0x200154a9
- 8004628:	200154ac 	.word	0x200154ac
+ 8004620:	2000fc08 	.word	0x2000fc08
+ 8004624:	2000fc89 	.word	0x2000fc89
+ 8004628:	2000fc8c 	.word	0x2000fc8c
  800462c:	fff0bdc1 	.word	0xfff0bdc1
- 8004630:	200154c4 	.word	0x200154c4
- 8004634:	200154dc 	.word	0x200154dc
+ 8004630:	2000fca4 	.word	0x2000fca4
+ 8004634:	2000fcbc 	.word	0x2000fcbc
  8004638:	40021000 	.word	0x40021000
  800463c:	20000004 	.word	0x20000004
   {
@@ -9578,7 +9578,7 @@ static void init_internal_once(void)
  8004778:	20000004 	.word	0x20000004
  800477c:	40000400 	.word	0x40000400
  8004780:	40000800 	.word	0x40000800
- 8004784:	20015428 	.word	0x20015428
+ 8004784:	2000fc08 	.word	0x2000fc08
 
 08004788 <stop_motor>:
 /* =========================
@@ -9672,7 +9672,7 @@ static void publish_vectors(uint8_t port)
  8004812:	3718      	adds	r7, #24
  8004814:	46bd      	mov	sp, r7
  8004816:	bd80      	pop	{r7, pc}
- 8004818:	20015428 	.word	0x20015428
+ 8004818:	2000fc08 	.word	0x2000fc08
  800481c:	2000016c 	.word	0x2000016c
  8004820:	20000184 	.word	0x20000184
 
@@ -9783,8 +9783,8 @@ bool ServoSystem_SetPositionDeg(uint8_t port, float position_deg)
  80048d2:	3710      	adds	r7, #16
  80048d4:	46bd      	mov	sp, r7
  80048d6:	bd80      	pop	{r7, pc}
- 80048d8:	200154a8 	.word	0x200154a8
- 80048dc:	20015428 	.word	0x20015428
+ 80048d8:	2000fc88 	.word	0x2000fc88
+ 80048dc:	2000fc08 	.word	0x2000fc08
 
 080048e0 <ServoSystem_SetVelocityDegS>:
 
@@ -10025,14 +10025,14 @@ void ServoSystem_Controller(void)
  8004a86:	46bd      	mov	sp, r7
  8004a88:	bd80      	pop	{r7, pc}
  8004a8a:	bf00      	nop
- 8004a8c:	200154a8 	.word	0x200154a8
+ 8004a8c:	2000fc88 	.word	0x2000fc88
  8004a90:	20000124 	.word	0x20000124
- 8004a94:	200154a9 	.word	0x200154a9
- 8004a98:	200154ac 	.word	0x200154ac
+ 8004a94:	2000fc89 	.word	0x2000fc89
+ 8004a98:	2000fc8c 	.word	0x2000fc8c
  8004a9c:	2000013c 	.word	0x2000013c
- 8004aa0:	200154c4 	.word	0x200154c4
+ 8004aa0:	2000fca4 	.word	0x2000fca4
  8004aa4:	20000154 	.word	0x20000154
- 8004aa8:	200154dc 	.word	0x200154dc
+ 8004aa8:	2000fcbc 	.word	0x2000fcbc
 
 08004aac <servo_system_controller>:
 
@@ -10211,7 +10211,7 @@ LoopForever:
   ldr r2, =_sbss
  8004b58:	20000370 	.word	0x20000370
   ldr r4, =_ebss
- 8004b5c:	200156f8 	.word	0x200156f8
+ 8004b5c:	2000fed8 	.word	0x2000fed8
 
 08004b60 <ADC1_2_IRQHandler>:
  * @retval : None
@@ -10390,7 +10390,7 @@ __weak void HAL_IncTick(void)
  8004c28:	4770      	bx	lr
  8004c2a:	bf00      	nop
  8004c2c:	200001a0 	.word	0x200001a0
- 8004c30:	200154f4 	.word	0x200154f4
+ 8004c30:	2000fcd4 	.word	0x2000fcd4
 
 08004c34 <HAL_GetTick>:
   * @note This function is declared as __weak to be overwritten in case of other
@@ -10410,7 +10410,7 @@ __weak uint32_t HAL_GetTick(void)
  8004c40:	f85d 7b04 	ldr.w	r7, [sp], #4
  8004c44:	4770      	bx	lr
  8004c46:	bf00      	nop
- 8004c48:	200154f4 	.word	0x200154f4
+ 8004c48:	2000fcd4 	.word	0x2000fcd4
 
 08004c4c <HAL_CAN_Init>:
   * @param  hcan pointer to a CAN_HandleTypeDef structure that contains
@@ -19580,7 +19580,7 @@ void MX_CAN1_Init(void)
  8007f3c:	bd80      	pop	{r7, pc}
  8007f3e:	bf00      	nop
  8007f40:	40021000 	.word	0x40021000
- 8007f44:	200154f8 	.word	0x200154f8
+ 8007f44:	2000fcd8 	.word	0x2000fcd8
  8007f48:	40006400 	.word	0x40006400
 
 08007f4c <MX_GPIO_Init>:
@@ -20067,7 +20067,7 @@ void CAN1_RX0_IRQHandler(void)
  80081ae:	bf00      	nop
  80081b0:	bd80      	pop	{r7, pc}
  80081b2:	bf00      	nop
- 80081b4:	200154f8 	.word	0x200154f8
+ 80081b4:	2000fcd8 	.word	0x2000fcd8
 
 080081b8 <_getpid>:
 void initialise_monitor_handles()
@@ -20373,8 +20373,8 @@ void *_sbrk(ptrdiff_t incr)
  8008332:	bd80      	pop	{r7, pc}
  8008334:	20018000 	.word	0x20018000
  8008338:	00000400 	.word	0x00000400
- 800833c:	20015520 	.word	0x20015520
- 8008340:	200156f8 	.word	0x200156f8
+ 800833c:	2000fd00 	.word	0x2000fd00
+ 8008340:	2000fed8 	.word	0x2000fed8
 
 08008344 <Platform_SystemClock_Config>:
 #include "system_clock.h"
@@ -20593,7 +20593,7 @@ void MX_UART4_Init(void)
  800848c:	46bd      	mov	sp, r7
  800848e:	bd80      	pop	{r7, pc}
  8008490:	40021000 	.word	0x40021000
- 8008494:	20015524 	.word	0x20015524
+ 8008494:	2000fd04 	.word	0x2000fd04
  8008498:	40004c00 	.word	0x40004c00
 
 0800849c <sulp>:
@@ -22120,7 +22120,7 @@ void MX_UART4_Init(void)
  80093bc:	08009573 	.word	0x08009573
  80093c0:	080095ab 	.word	0x080095ab
  80093c4:	080095cf 	.word	0x080095cf
- 80093c8:	200155ac 	.word	0x200155ac
+ 80093c8:	2000fd8c 	.word	0x2000fd8c
 
 080093cc <stdio_exit_handler>:
  80093cc:	4a02      	ldr	r2, [pc, #8]	@ (80093d8 <stdio_exit_handler+0xc>)
@@ -22155,9 +22155,9 @@ void MX_UART4_Init(void)
  8009410:	f001 be90 	b.w	800b134 <_fflush_r>
  8009414:	bd10      	pop	{r4, pc}
  8009416:	bf00      	nop
- 8009418:	200155ac 	.word	0x200155ac
- 800941c:	20015614 	.word	0x20015614
- 8009420:	2001567c 	.word	0x2001567c
+ 8009418:	2000fd8c 	.word	0x2000fd8c
+ 800941c:	2000fdf4 	.word	0x2000fdf4
+ 8009420:	2000fe5c 	.word	0x2000fe5c
 
 08009424 <global_stdio_init.part.0>:
  8009424:	b510      	push	{r4, lr}
@@ -22178,21 +22178,21 @@ void MX_UART4_Init(void)
  800944a:	e8bd 4010 	ldmia.w	sp!, {r4, lr}
  800944e:	2112      	movs	r1, #18
  8009450:	f7ff bf86 	b.w	8009360 <std>
- 8009454:	200156e4 	.word	0x200156e4
- 8009458:	200155ac 	.word	0x200155ac
+ 8009454:	2000fec4 	.word	0x2000fec4
+ 8009458:	2000fd8c 	.word	0x2000fd8c
  800945c:	080093cd 	.word	0x080093cd
 
 08009460 <__sfp_lock_acquire>:
  8009460:	4801      	ldr	r0, [pc, #4]	@ (8009468 <__sfp_lock_acquire+0x8>)
  8009462:	f000 b9c0 	b.w	80097e6 <__retarget_lock_acquire_recursive>
  8009466:	bf00      	nop
- 8009468:	200156ed 	.word	0x200156ed
+ 8009468:	2000fecd 	.word	0x2000fecd
 
 0800946c <__sfp_lock_release>:
  800946c:	4801      	ldr	r0, [pc, #4]	@ (8009474 <__sfp_lock_release+0x8>)
  800946e:	f000 b9bb 	b.w	80097e8 <__retarget_lock_release_recursive>
  8009472:	bf00      	nop
- 8009474:	200156ed 	.word	0x200156ed
+ 8009474:	2000fecd 	.word	0x2000fecd
 
 08009478 <__sinit>:
  8009478:	b510      	push	{r4, lr}
@@ -22212,7 +22212,7 @@ void MX_UART4_Init(void)
  800949c:	e7f2      	b.n	8009484 <__sinit+0xc>
  800949e:	bf00      	nop
  80094a0:	080093e5 	.word	0x080093e5
- 80094a4:	200156e4 	.word	0x200156e4
+ 80094a4:	2000fec4 	.word	0x2000fec4
 
 080094a8 <_fwalk_sglue>:
  80094a8:	e92d 43f8 	stmdb	sp!, {r3, r4, r5, r6, r7, r8, r9, lr}
@@ -22496,7 +22496,7 @@ void MX_UART4_Init(void)
  800971a:	b103      	cbz	r3, 800971e <_close_r+0x1a>
  800971c:	6023      	str	r3, [r4, #0]
  800971e:	bd38      	pop	{r3, r4, r5, pc}
- 8009720:	200156e8 	.word	0x200156e8
+ 8009720:	2000fec8 	.word	0x2000fec8
 
 08009724 <_lseek_r>:
  8009724:	b538      	push	{r3, r4, r5, lr}
@@ -22514,7 +22514,7 @@ void MX_UART4_Init(void)
  800973e:	b103      	cbz	r3, 8009742 <_lseek_r+0x1e>
  8009740:	6023      	str	r3, [r4, #0]
  8009742:	bd38      	pop	{r3, r4, r5, pc}
- 8009744:	200156e8 	.word	0x200156e8
+ 8009744:	2000fec8 	.word	0x2000fec8
 
 08009748 <_read_r>:
  8009748:	b538      	push	{r3, r4, r5, lr}
@@ -22532,7 +22532,7 @@ void MX_UART4_Init(void)
  8009762:	b103      	cbz	r3, 8009766 <_read_r+0x1e>
  8009764:	6023      	str	r3, [r4, #0]
  8009766:	bd38      	pop	{r3, r4, r5, pc}
- 8009768:	200156e8 	.word	0x200156e8
+ 8009768:	2000fec8 	.word	0x2000fec8
 
 0800976c <_write_r>:
  800976c:	b538      	push	{r3, r4, r5, lr}
@@ -22550,7 +22550,7 @@ void MX_UART4_Init(void)
  8009786:	b103      	cbz	r3, 800978a <_write_r+0x1e>
  8009788:	6023      	str	r3, [r4, #0]
  800978a:	bd38      	pop	{r3, r4, r5, pc}
- 800978c:	200156e8 	.word	0x200156e8
+ 800978c:	2000fec8 	.word	0x2000fec8
 
 08009790 <__errno>:
  8009790:	4b01      	ldr	r3, [pc, #4]	@ (8009798 <__errno+0x8>)
@@ -22720,7 +22720,7 @@ void MX_UART4_Init(void)
  80098ea:	e7ca      	b.n	8009882 <_free_r+0x22>
  80098ec:	bd38      	pop	{r3, r4, r5, pc}
  80098ee:	bf00      	nop
- 80098f0:	200156f4 	.word	0x200156f4
+ 80098f0:	2000fed4 	.word	0x2000fed4
 
 080098f4 <rshift>:
  80098f4:	6903      	ldr	r3, [r0, #16]
@@ -23431,7 +23431,7 @@ void MX_UART4_Init(void)
  8009fb2:	d1f2      	bne.n	8009f9a <sbrk_aligned+0x22>
  8009fb4:	e7ef      	b.n	8009f96 <sbrk_aligned+0x1e>
  8009fb6:	bf00      	nop
- 8009fb8:	200156f0 	.word	0x200156f0
+ 8009fb8:	2000fed0 	.word	0x2000fed0
 
 08009fbc <_malloc_r>:
  8009fbc:	e92d 43f8 	stmdb	sp!, {r3, r4, r5, r6, r7, r8, r9, lr}
@@ -23541,7 +23541,7 @@ void MX_UART4_Init(void)
  800a0b2:	6005      	str	r5, [r0, #0]
  800a0b4:	e7d6      	b.n	800a064 <_malloc_r+0xa8>
  800a0b6:	bf00      	nop
- 800a0b8:	200156f4 	.word	0x200156f4
+ 800a0b8:	2000fed4 	.word	0x2000fed4
 
 0800a0bc <__ascii_mbtowc>:
  800a0bc:	b082      	sub	sp, #8
@@ -23566,13 +23566,13 @@ void MX_UART4_Init(void)
  800a0e0:	4801      	ldr	r0, [pc, #4]	@ (800a0e8 <__malloc_lock+0x8>)
  800a0e2:	f7ff bb80 	b.w	80097e6 <__retarget_lock_acquire_recursive>
  800a0e6:	bf00      	nop
- 800a0e8:	200156ec 	.word	0x200156ec
+ 800a0e8:	2000fecc 	.word	0x2000fecc
 
 0800a0ec <__malloc_unlock>:
  800a0ec:	4801      	ldr	r0, [pc, #4]	@ (800a0f4 <__malloc_unlock+0x8>)
  800a0ee:	f7ff bb7b 	b.w	80097e8 <__retarget_lock_release_recursive>
  800a0f2:	bf00      	nop
- 800a0f4:	200156ec 	.word	0x200156ec
+ 800a0f4:	2000fecc 	.word	0x2000fecc
 
 0800a0f8 <_Balloc>:
  800a0f8:	b570      	push	{r4, r5, r6, lr}
@@ -25353,7 +25353,7 @@ void MX_UART4_Init(void)
  800b1f2:	b103      	cbz	r3, 800b1f6 <_sbrk_r+0x1a>
  800b1f4:	6023      	str	r3, [r4, #0]
  800b1f6:	bd38      	pop	{r3, r4, r5, pc}
- 800b1f8:	200156e8 	.word	0x200156e8
+ 800b1f8:	2000fec8 	.word	0x2000fec8
 
 0800b1fc <abort>:
  800b1fc:	b508      	push	{r3, lr}
@@ -25880,7 +25880,7 @@ void MX_UART4_Init(void)
  800b6b2:	6023      	str	r3, [r4, #0]
  800b6b4:	bd38      	pop	{r3, r4, r5, pc}
  800b6b6:	bf00      	nop
- 800b6b8:	200156e8 	.word	0x200156e8
+ 800b6b8:	2000fec8 	.word	0x2000fec8
 
 0800b6bc <_getpid_r>:
  800b6bc:	f7fc bd7c 	b.w	80081b8 <_getpid>
@@ -25992,7 +25992,7 @@ void MX_UART4_Init(void)
  800b7ae:	6023      	str	r3, [r4, #0]
  800b7b0:	bd38      	pop	{r3, r4, r5, pc}
  800b7b2:	bf00      	nop
- 800b7b4:	200156e8 	.word	0x200156e8
+ 800b7b4:	2000fec8 	.word	0x2000fec8
 
 0800b7b8 <_isatty_r>:
  800b7b8:	b538      	push	{r3, r4, r5, lr}
@@ -26008,7 +26008,7 @@ void MX_UART4_Init(void)
  800b7ce:	b103      	cbz	r3, 800b7d2 <_isatty_r+0x1a>
  800b7d0:	6023      	str	r3, [r4, #0]
  800b7d2:	bd38      	pop	{r3, r4, r5, pc}
- 800b7d4:	200156e8 	.word	0x200156e8
+ 800b7d4:	2000fec8 	.word	0x2000fec8
 
 0800b7d8 <_init>:
  800b7d8:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
