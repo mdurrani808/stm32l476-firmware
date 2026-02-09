@@ -12,6 +12,10 @@
 #include "can_params.h"
 #include "can_config.h"
 
+#define MAX_DBC_MSGS  (128U)
+#define MAX_DBC_SIGS  (256U)
+#define MAX_MUX_PAGE_CAP (64U)
+
 /* DBC text blob (generated from App/dbc/can_dbc_text.c) */
 extern const char* g_can_dbc_text;
 
@@ -39,10 +43,10 @@ typedef struct
   /* Mux message: mux values defined in DBC (no "always" signals exist per project rules).
    * Arrays are compact and avoid per-page name storage to keep RAM low.
    */
-  uint8_t mux_vals[32];
-  uint8_t mux_has_data[32];
-  uint32_t mux_last_rx_tick[32];
-  uint32_t mux_last_tx_tick[32];
+  uint8_t mux_vals[MAX_MUX_PAGE_CAP];
+  uint8_t mux_has_data[MAX_MUX_PAGE_CAP];
+  uint32_t mux_last_rx_tick[MAX_MUX_PAGE_CAP];
+  uint32_t mux_last_tx_tick[MAX_MUX_PAGE_CAP];
   uint8_t page_count;
 } dbc_msg_t;
 
@@ -63,8 +67,6 @@ typedef struct
   int16_t mux_val; /* -1 if not muxed, else required mux value ("m17M") */
 } dbc_sig_t;
 
-#define MAX_DBC_MSGS  (64U)
-#define MAX_DBC_SIGS  (256U)
 
 static dbc_msg_t s_msgs[MAX_DBC_MSGS];
 static dbc_sig_t s_sigs[MAX_DBC_SIGS];
@@ -761,6 +763,8 @@ static bool dbc_parse_all(void)
       {
         return false;
       }
+      // DEBUGGING PURPOSES
+      //if (strcmp(s->full_name, "SERVO_PCB_R.heartbeat_success") == 0) { __NOP(); }
 
       s->msg_index = (uint16_t)current_mi;
       s->start_bit = (uint16_t)start_bit;
@@ -916,7 +920,6 @@ static void handle_rx_frame(uint32_t std_id, const uint8_t* data, uint8_t dlc)
     return;
 
   dbc_msg_t* m = &s_msgs[(uint32_t)mi];
-  bool wrote_any_data = false;
 
   if (m->mux_sig_index < 0)
   {
@@ -949,24 +952,12 @@ static void handle_rx_frame(uint32_t std_id, const uint8_t* data, uint8_t dlc)
       if (updated)
       {
         s_inbox_updated_since_tick = 1U;
-        if (s->length > 0U)
-          wrote_any_data = true;
       }
     }
 
-    /* Event latch timing rule */
-    if (m->has_data == 0U)
-    {
-      /* No-data message: set after recognition */
-      set_event_nonmux((uint32_t)mi);
-      s_inbox_updated_since_tick = 1U;
-    }
-    else if (wrote_any_data)
-    {
-      set_event_nonmux((uint32_t)mi);
-      s_inbox_updated_since_tick = 1U;
-    }
-
+    /* NEW RULE: event flips on receipt (not only when value changes) */
+    set_event_nonmux((uint32_t)mi);
+    s_inbox_updated_since_tick = 1U;
     return;
   }
 
@@ -980,7 +971,7 @@ static void handle_rx_frame(uint32_t std_id, const uint8_t* data, uint8_t dlc)
   if (pidx < 0)
     return;
 
-  /* Update mux selector param (does not count toward wrote_any_data) */
+  /* Update mux selector param (does not gate event) */
   if (mux_sig->type == CANP_TYPE_BOOL)
   {
     if (CanParams__UpdateBool(mux_sig->full_name, (uint8_t)(mux_raw != 0U)))
@@ -1027,22 +1018,12 @@ static void handle_rx_frame(uint32_t std_id, const uint8_t* data, uint8_t dlc)
     if (updated)
     {
       s_inbox_updated_since_tick = 1U;
-      if (s->length > 0U)
-        wrote_any_data = true;
     }
   }
 
-  /* Event latch timing rule */
-  if (m->mux_has_data[(uint8_t)pidx] == 0U)
-  {
-    set_event_mux((uint32_t)mi, mux_val);
-    s_inbox_updated_since_tick = 1U;
-  }
-  else if (wrote_any_data)
-  {
-    set_event_mux((uint32_t)mi, mux_val);
-    s_inbox_updated_since_tick = 1U;
-  }
+  /* NEW RULE: mux-page event flips on receipt (not only when value changes) */
+  set_event_mux((uint32_t)mi, mux_val);
+  s_inbox_updated_since_tick = 1U;
 }
 
 static void process_rx_fifo0(void)

@@ -15,6 +15,13 @@ def usage() -> int:
     return 2
 
 
+def keep_line(line: str) -> bool:
+    # Your firmware only recognizes BO_ and SG_ lines.
+    # It trims leading spaces/tabs before matching.
+    stripped = line.lstrip(" \t")
+    return stripped.startswith("BO_ ") or stripped.startswith("SG_ ")
+
+
 def main() -> int:
     if len(sys.argv) != 3:
         return usage()
@@ -36,26 +43,66 @@ def main() -> int:
         print(f"  {e}")
         return 2
 
+    # Filter down to only BO_/SG_ that your firmware uses.
+    # Also: only keep SG_ lines after a BO_ (otherwise they are meaningless).
+    filtered: list[str] = []
+    in_message = False
+    motorola_warnings = 0
+
+    for raw in text_lines:
+        line = raw.rstrip("\r\n")
+
+        stripped = line.lstrip(" \t")
+        if stripped.startswith("BO_ "):
+            in_message = True
+            filtered.append(stripped)  # normalize indentation
+            continue
+
+        if stripped.startswith("SG_ "):
+            if not in_message:
+                # Ignore stray SG_ before any BO_
+                continue
+
+            # Optional sanity warning: your firmware only implements little-endian bit order.
+            # DBC uses @0 for Motorola/big-endian, @1 for Intel/little-endian.
+            if "@0" in stripped:
+                motorola_warnings += 1
+
+            filtered.append("\t" + stripped)  # pretty-print under BO_
+            continue
+
+        # Ignore everything else
+
+    if motorola_warnings:
+        print(f"Warning: found {motorola_warnings} SG_ lines containing '@0' (Motorola/big-endian).")
+        print("         Your firmware's extract/insert helpers are little-endian only (@1).")
+
+    # Emit C file
     lines: list[str] = []
     lines.append("#include <stddef.h>\n\n")
     lines.append("/*\n")
     lines.append(" * AUTO-GENERATED FILE — DO NOT EDIT BY HAND.\n")
-    lines.append(f" *\n * Source: {inp.as_posix()}\n")
+    lines.append(" *\n")
+    lines.append(f" * Source: {inp.as_posix()}\n")
     lines.append(" * Generator: tools/dbc_to_c.py\n")
+    lines.append(" *\n")
+    lines.append(" * NOTE: This file intentionally contains only BO_ and SG_ lines,\n")
+    lines.append(" * because the firmware DBC parser ignores all other DBC constructs.\n")
     lines.append(" */\n\n")
 
     lines.append("const char* g_can_dbc_text =\n")
-    for l in text_lines:
+    for l in filtered:
         lines.append(f"\"{c_escape(l)}\\n\"\n")
     lines.append(";\n\n")
 
-    # Leave 0 if unused; or compute on-target with strlen(g_can_dbc_text).
+    # If you ever want this, you can compute it here and keep it nonzero.
     lines.append("const size_t g_can_dbc_text_len = 0;\n")
 
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text("".join(lines), encoding="utf-8", newline="\n")
 
     print(f"Wrote: {out}")
+    print(f"Kept {len(filtered)} / {len(text_lines)} lines (BO_/SG_ only).")
     return 0
 
 
