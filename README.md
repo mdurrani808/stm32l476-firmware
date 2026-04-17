@@ -304,3 +304,7 @@ Contains tunables such as:
 * If adding new messages, update DBC and regenerate blob.
 * If using many CAN IDs, software fallback still validates IDs beyond hardware banks.
 * Clean + rebuild after config changes.
+* Below commands to pull main updates without losing your branch work
+* git checkout your-branch
+* git fetch origin
+* git merge origin/main
