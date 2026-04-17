@@ -1347,6 +1347,86 @@ bool CanSystem_Send(const char* full_name)
   return true;
 }
 
+
+static int hex_nibble_value(char c)
+{
+  if (c >= '0' && c <= '9') return (int)(c - '0');
+  if (c >= 'a' && c <= 'f') return (int)(c - 'a') + 10;
+  if (c >= 'A' && c <= 'F') return (int)(c - 'A') + 10;
+  return -1;
+}
+
+bool CanSystem_SendRaw(const char* frame_str)
+{
+  if (frame_str == NULL)
+    return false;
+
+  char raw[32];
+  (void)strncpy(raw, frame_str, sizeof(raw) - 1U);
+  raw[sizeof(raw) - 1U] = '\0';
+  trim_ws_inplace(raw);
+  if (raw[0] == '\0')
+    return false;
+
+  char* hash = strchr(raw, '#');
+  if (hash == NULL)
+    return false;
+  if (strchr(hash + 1, '#') != NULL)
+    return false;
+
+  *hash = '\0';
+  char* id_str = raw;
+  char* data_str = hash + 1;
+
+  trim_ws_inplace(id_str);
+  trim_ws_inplace(data_str);
+
+  size_t id_len = strlen(id_str);
+  size_t data_len = strlen(data_str);
+
+  if (id_len == 0U || id_len > 3U)
+    return false;
+  if ((data_len % 2U) != 0U)
+    return false;
+  if (data_len > 16U)
+    return false;
+
+  char* end = NULL;
+  unsigned long parsed_id = strtoul(id_str, &end, 16);
+  if (end == id_str || *end != '\0')
+    return false;
+  if (parsed_id > 0x7FFUL)
+    return false;
+
+  uint8_t data[8] = {0};
+  uint8_t dlc = (uint8_t)(data_len / 2U);
+
+  for (uint8_t i = 0U; i < dlc; i++)
+  {
+    int hi = hex_nibble_value(data_str[(size_t)i * 2U]);
+    int lo = hex_nibble_value(data_str[(size_t)i * 2U + 1U]);
+    if (hi < 0 || lo < 0)
+      return false;
+    data[i] = (uint8_t)(((uint8_t)hi << 4U) | (uint8_t)lo);
+  }
+
+  CAN_TxHeaderTypeDef txh;
+  txh.StdId = (uint32_t)parsed_id;
+  txh.ExtId = 0U;
+  txh.IDE = CAN_ID_STD;
+  txh.RTR = CAN_RTR_DATA;
+  txh.DLC = dlc;
+  txh.TransmitGlobalTime = DISABLE;
+
+  uint32_t mbx = 0U;
+  if (HAL_CAN_AddTxMessage(&hcan1, &txh, data, &mbx) != HAL_OK)
+  {
+    return false;
+  }
+
+  return true;
+}
+
 /* =========================
  *  Debug helpers
  * ========================= */

@@ -102,6 +102,35 @@ CanSystem_Send("POWER_PCB_R");
 CanSystem_Send("SCIENCE_SERVO_PCB_R.heartbeat_success");
 ```
 
+### `CanSystem_SendRaw(const char* frame_str)`
+
+Sends a raw standard-ID CAN data frame immediately without using the DBC or parameter database.
+
+Accepted format:
+
+```text
+XXX#
+XXX#112233
+7FF#0011223344556677
+```
+
+Rules:
+
+- `XXX` is a 1 to 3 digit hex standard ID (`0x000..0x7FF`)
+- payload is optional
+- payload must contain an even number of hex digits
+- maximum payload is 8 bytes (`16` hex digits)
+- only standard 11-bit IDs are supported
+
+Examples:
+
+```c
+CanSystem_SendRaw("70#300000");
+CanSystem_SendRaw("70#300040");
+CanSystem_SendRaw("70#30FF7F");
+CanSystem_SendRaw("123#1122334455667788");
+```
+
 ### `CanSystem_SetBool(name, value)` *(legacy)*
 
 Sets parameter then schedules send.

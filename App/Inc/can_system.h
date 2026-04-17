@@ -33,6 +33,21 @@ void can_system_controller(void);
  */
 bool CanSystem_Send(const char* full_name);
 
+/* Sends a raw standard 11-bit CAN data frame directly.
+ *
+ * Format:
+ *   - "XXX#"                    : zero-length payload
+ *   - "XXX#112233"              : 3-byte payload
+ *   - "7FF#0011223344556677"    : 8-byte payload
+ *
+ * Rules:
+ *   - standard IDs only (1 to 3 hex digits, 0x000..0x7FF)
+ *   - payload must contain an even number of hex digits
+ *   - payload length may be 0 to 16 hex digits (0 to 8 bytes)
+ *   - frame is transmitted immediately and bypasses the DBC/CanParams layer
+ */
+bool CanSystem_SendRaw(const char* frame_str);
+
 /* Debug helpers (no counters)
  * - full_name follows the same naming rules as CanSystem_Send()
  */
