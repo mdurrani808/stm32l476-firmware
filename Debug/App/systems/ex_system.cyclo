@@ -1,2 +1,2 @@
-../App/systems/ex_system.c:9:13:init_once	1
-../App/systems/ex_system.c:14:6:ex_system_controller	2
+../App/systems/ex_system.c:31:13:tick_elapsed	2
+../App/systems/ex_system.c:42:6:ex_system_controller	4

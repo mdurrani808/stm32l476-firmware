@@ -5,13 +5,13 @@
 extern "C" {
 #endif
 
-#include "main.h"
+#include "project_config.h"
 
-/* =========================
- *  Board pinout
- * ========================= */
-#define LED_GPIO_PORT   GPIOC
-#define LED_GPIO_PIN    GPIO_PIN_5
+/* Backward-compatible aliases. Prefer including project_config.h directly for
+ * new code, but keep these names so existing modules remain easy to diff.
+ */
+#define LED_GPIO_PORT   PROJECT_LED_GPIO_PORT
+#define LED_GPIO_PIN    PROJECT_LED_GPIO_PIN
 
 #ifdef __cplusplus
 }
