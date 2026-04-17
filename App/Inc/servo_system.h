@@ -8,7 +8,9 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 
-#define SERVO_PORT_COUNT (8u)
+#include "project_config.h"
+
+#define SERVO_PORT_COUNT (PROJECT_SERVO_PORT_COUNT)
 
 /* Model IDs */
 enum

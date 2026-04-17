@@ -39,6 +39,12 @@ bool CanSystem_Send(const char* full_name);
 bool CanSystem_DebugGetLastRxTick(const char* full_name, uint32_t* out_tick);
 bool CanSystem_DebugGetLastTxTick(const char* full_name, uint32_t* out_tick);
 
+/* Returns true when the given standard ID is present in the configured RX
+ * allowlist (or when the allowlist is empty and all IDs are allowed).
+ * Useful when validating hardware filter configuration with a debugger.
+ */
+bool CanSystem_DebugIsStdIdAllowed(uint32_t std_id);
+
 /* =========================
  * Deprecated legacy API
  * =========================

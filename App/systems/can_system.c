@@ -11,10 +11,11 @@
 
 #include "can_params.h"
 #include "can_config.h"
+#include "project_config.h"
 
-#define MAX_DBC_MSGS  (32U)
-#define MAX_DBC_SIGS  (256U)
-#define MAX_MUX_PAGE_CAP (64U)
+#define MAX_DBC_MSGS  (PROJECT_CAN_MAX_DBC_MSGS)
+#define MAX_DBC_SIGS  (PROJECT_CAN_MAX_DBC_SIGS)
+#define MAX_MUX_PAGE_CAP (PROJECT_CAN_MAX_MUX_PAGES_PER_MSG)
 
 /* DBC text blob (generated from App/dbc/can_dbc_text.c) */
 extern const char* g_can_dbc_text;
@@ -77,7 +78,7 @@ static uint32_t s_sig_count = 0;
  * - Non-mux messages: mux_val = 0xFF sentinel
  * - Mux messages: pending mux values (0..255)
  */
-#define MAX_PENDING_MUX (8U)
+#define MAX_PENDING_MUX (PROJECT_CAN_MAX_PENDING_MUX_PAGES)
 typedef struct
 {
   uint8_t pending_mux_vals[MAX_PENDING_MUX];
@@ -120,9 +121,26 @@ static void can_apply_filters(void)
   CAN_FilterTypeDef f;
   (void)memset(&f, 0, sizeof(f));
 
-  f.FilterActivation = ENABLE;
   f.FilterFIFOAssignment = CAN_FILTER_FIFO0;
   f.SlaveStartFilterBank = 14;
+
+  /* Always clear all master filter banks first so a previous firmware image
+   * cannot leave stale IDs enabled in hardware.
+   */
+  for (uint32_t bank = 0; bank < 14U; bank++)
+  {
+    f.FilterBank = bank;
+    f.FilterMode = CAN_FILTERMODE_IDMASK;
+    f.FilterScale = CAN_FILTERSCALE_32BIT;
+    f.FilterActivation = DISABLE;
+    f.FilterIdHigh = 0x0000;
+    f.FilterIdLow = 0x0000;
+    f.FilterMaskIdHigh = 0x0000;
+    f.FilterMaskIdLow = 0x0000;
+    (void)HAL_CAN_ConfigFilter(&hcan1, &f);
+  }
+
+  f.FilterActivation = ENABLE;
 
   if (g_can_rx_id_filter_count == 0U)
   {
@@ -130,12 +148,10 @@ static void can_apply_filters(void)
     f.FilterBank = 0;
     f.FilterMode = CAN_FILTERMODE_IDMASK;
     f.FilterScale = CAN_FILTERSCALE_32BIT;
-
     f.FilterIdHigh = 0x0000;
     f.FilterIdLow  = 0x0000;
     f.FilterMaskIdHigh = 0x0000;
     f.FilterMaskIdLow  = 0x0000;
-
     (void)HAL_CAN_ConfigFilter(&hcan1, &f);
     return;
   }
@@ -147,7 +163,7 @@ static void can_apply_filters(void)
   {
     if (bank >= 14U)
     {
-      /* remainder still filtered in software */
+      /* Any remainder is still enforced by the software allowlist. */
       break;
     }
 
@@ -162,7 +178,7 @@ static void can_apply_filters(void)
     f.FilterMode = CAN_FILTERMODE_IDLIST;
     f.FilterScale = CAN_FILTERSCALE_32BIT;
 
-    /* Correct HAL layout for StdId in 32-bit mode: High=(ID<<5), Low=0 */
+    /* bxCAN standard-ID list filter layout for data frames in 32-bit mode. */
     f.FilterIdHigh     = (uint16_t)(id1 << 5);
     f.FilterIdLow      = 0x0000;
     f.FilterMaskIdHigh = (uint16_t)(id2 << 5);
@@ -1461,4 +1477,10 @@ bool CanSystem_SetFloat(const char* full_name, float value)
     return false;
 
   return CanSystem_Send(full_name);
+}
+
+
+bool CanSystem_DebugIsStdIdAllowed(uint32_t std_id)
+{
+  return id_in_allow_list(std_id);
 }

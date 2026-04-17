@@ -6,6 +6,7 @@
 
 #include <string.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 /* =========================
  *  Servo model definitions
@@ -135,60 +136,60 @@ static uint8_t s_inited = 0U;
  *  CAN integration
  * ========================= */
 
-#define SERVO_CAN_COUNT (6u)
+#define SERVO_CAN_COUNT (PROJECT_SERVO_ACTIVE_CAN_COUNT)
 
-static const char* s_can_general[SERVO_CAN_COUNT] =
+static const char* s_can_maint_cmd[SERVO_CAN_COUNT] =
 {
-  "SERVO_PCB_C.general_0",
-  "SERVO_PCB_C.general_1",
-  "SERVO_PCB_C.general_2",
-  "SERVO_PCB_C.general_3",
-  "SERVO_PCB_C.general_4",
-  "SERVO_PCB_C.general_5",
+  "SCIENCE_SERVO_PCB_C.servo_maintenance_cmd_0",
+  "SCIENCE_SERVO_PCB_C.servo_maintenance_cmd_1",
+  "SCIENCE_SERVO_PCB_C.servo_maintenance_cmd_2",
+  "SCIENCE_SERVO_PCB_C.servo_maintenance_cmd_3",
+  "SCIENCE_SERVO_PCB_C.servo_maintenance_cmd_4",
+  "SCIENCE_SERVO_PCB_C.servo_maintenance_cmd_5",
 };
 
 static const char* s_can_pos_tgt[SERVO_CAN_COUNT] =
 {
-  "SERVO_PCB_C.motor_position_target_0",
-  "SERVO_PCB_C.motor_position_target_1",
-  "SERVO_PCB_C.motor_position_target_2",
-  "SERVO_PCB_C.motor_position_target_3",
-  "SERVO_PCB_C.motor_position_target_4",
-  "SERVO_PCB_C.motor_position_target_5",
+  "SCIENCE_SERVO_PCB_C.servo_position_target_0",
+  "SCIENCE_SERVO_PCB_C.servo_position_target_1",
+  "SCIENCE_SERVO_PCB_C.servo_position_target_2",
+  "SCIENCE_SERVO_PCB_C.servo_position_target_3",
+  "SCIENCE_SERVO_PCB_C.servo_position_target_4",
+  "SCIENCE_SERVO_PCB_C.servo_position_target_5",
 };
 
 static const char* s_can_vel_tgt[SERVO_CAN_COUNT] =
 {
-  "SERVO_PCB_C.motor_velocity_target_0",
-  "SERVO_PCB_C.motor_velocity_target_1",
-  "SERVO_PCB_C.motor_velocity_target_2",
-  "SERVO_PCB_C.motor_velocity_target_3",
-  "SERVO_PCB_C.motor_velocity_target_4",
-  "SERVO_PCB_C.motor_velocity_target_5",
+  "SCIENCE_SERVO_PCB_C.servo_velocity_target_0",
+  "SCIENCE_SERVO_PCB_C.servo_velocity_target_1",
+  "SCIENCE_SERVO_PCB_C.servo_velocity_target_2",
+  "SCIENCE_SERVO_PCB_C.servo_velocity_target_3",
+  "SCIENCE_SERVO_PCB_C.servo_velocity_target_4",
+  "SCIENCE_SERVO_PCB_C.servo_velocity_target_5",
 };
 
 static const char* s_can_pos_out[SERVO_CAN_COUNT] =
 {
-  "SERVO_PCB_R.motor_position_0",
-  "SERVO_PCB_R.motor_position_1",
-  "SERVO_PCB_R.motor_position_2",
-  "SERVO_PCB_R.motor_position_3",
-  "SERVO_PCB_R.motor_position_4",
-  "SERVO_PCB_R.motor_position_5",
+  "SCIENCE_SERVO_PCB_R.servo_position_state_resp_0",
+  "SCIENCE_SERVO_PCB_R.servo_position_state_resp_1",
+  "SCIENCE_SERVO_PCB_R.servo_position_state_resp_2",
+  "SCIENCE_SERVO_PCB_R.servo_position_state_resp_3",
+  "SCIENCE_SERVO_PCB_R.servo_position_state_resp_4",
+  "SCIENCE_SERVO_PCB_R.servo_position_state_resp_5",
 };
 
 static const char* s_can_vel_out[SERVO_CAN_COUNT] =
 {
-  "SERVO_PCB_R.motor_velocity_0",
-  "SERVO_PCB_R.motor_velocity_1",
-  "SERVO_PCB_R.motor_velocity_2",
-  "SERVO_PCB_R.motor_velocity_3",
-  "SERVO_PCB_R.motor_velocity_4",
-  "SERVO_PCB_R.motor_velocity_5",
+  "SCIENCE_SERVO_PCB_R.servo_velocity_state_resp_0",
+  "SCIENCE_SERVO_PCB_R.servo_velocity_state_resp_1",
+  "SCIENCE_SERVO_PCB_R.servo_velocity_state_resp_2",
+  "SCIENCE_SERVO_PCB_R.servo_velocity_state_resp_3",
+  "SCIENCE_SERVO_PCB_R.servo_velocity_state_resp_4",
+  "SCIENCE_SERVO_PCB_R.servo_velocity_state_resp_5",
 };
 
 static uint8_t s_rx_inited = 0U;
-static int32_t s_last_general[SERVO_CAN_COUNT];
+static int32_t s_last_maint_cmd[SERVO_CAN_COUNT];
 static int32_t s_last_pos_tgt[SERVO_CAN_COUNT];
 static int32_t s_last_vel_tgt[SERVO_CAN_COUNT];
 
@@ -364,7 +365,7 @@ static void init_internal_once(void)
   s_rx_inited = 0U;
   for (uint8_t i = 0; i < SERVO_CAN_COUNT; i++)
   {
-    s_last_general[i] = -999999;
+    s_last_maint_cmd[i] = -999999;
     s_last_pos_tgt[i] = -999999;
     s_last_vel_tgt[i] = -999999;
   }
@@ -482,8 +483,8 @@ static void publish_vectors(uint8_t port)
     (void)compute_position_from_pwm(def, s_ports[port].current_pwm_us, &pos_out);
   }
 
-  (void)CanSystem_SetInt32(s_can_pos_out[port], pos_out);
-  (void)CanSystem_SetInt32(s_can_vel_out[port], vel_out);
+  (void)CanParams_SetInt32(s_can_pos_out[port], pos_out);
+  (void)CanParams_SetInt32(s_can_vel_out[port], vel_out);
 }
 
 /* =========================
@@ -560,6 +561,7 @@ bool ServoSystem_SetVelocityDegS(uint8_t port, float velocity_deg_s)
   return false;
 }
 
+
 void ServoSystem_Controller(void)
 {
   if (!s_inited)
@@ -570,20 +572,19 @@ void ServoSystem_Controller(void)
 
   for (uint8_t i = 0; i < SERVO_CAN_COUNT; i++)
   {
-    int32_t gen = 0;
-    if (CanParams_GetInt32(s_can_general[i], &gen))
+    int32_t maint_cmd = 0;
+    if (CanParams_GetInt32(s_can_maint_cmd[i], &maint_cmd))
     {
-      if (!s_rx_inited || (gen != s_last_general[i]))
+      if (!s_rx_inited || (maint_cmd != s_last_maint_cmd[i]))
       {
-        s_last_general[i] = gen;
+        s_last_maint_cmd[i] = maint_cmd;
 
-        switch ((uint8_t)gen)
+        switch ((uint8_t)maint_cmd)
         {
           case 0: ServoSystem_OnSetZero(i); break;
-          case 1: ServoSystem_OnRequestVectors(i); publish_vectors(i); break;
-          case 2: ServoSystem_OnStopMotor(i); stop_motor(i); break;
-          case 3: ServoSystem_OnShutdownMotor(i); set_vcc(i, false); break;
-          case 4: ServoSystem_OnClearErrors(i); break;
+          case 1: ServoSystem_OnStopMotor(i); stop_motor(i); break;
+          case 2: ServoSystem_OnShutdownMotor(i); set_vcc(i, false); break;
+          case 3: ServoSystem_OnClearErrors(i); break;
           default: break;
         }
       }
@@ -606,6 +607,18 @@ void ServoSystem_Controller(void)
       {
         s_last_vel_tgt[i] = vel_tgt;
         (void)ServoSystem_SetVelocityDegS(i, (float)vel_tgt);
+      }
+    }
+
+    {
+      char event_name[64];
+      int n = snprintf(event_name, sizeof(event_name), "SCIENCE_SERVO_PCB_C.__event_mux_%u", (unsigned)(64U + i));
+      bool event = false;
+      if ((n > 0) && ((size_t)n < sizeof(event_name)) && CanParams_ProcEvent(event_name, &event) && event)
+      {
+        ServoSystem_OnRequestVectors(i);
+        publish_vectors(i);
+        (void)CanSystem_Send(s_can_pos_out[i]);
       }
     }
   }

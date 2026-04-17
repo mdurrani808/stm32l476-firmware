@@ -1,5 +1,5 @@
 App/systems/servo_system.o: ../App/systems/servo_system.c \
- ../App/Inc/servo_system.h ../Core/Inc/main.h \
+ ../App/Inc/servo_system.h ../App/Inc/project_config.h ../Core/Inc/main.h \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h \
  ../Core/Inc/stm32l4xx_hal_conf.h \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_rcc.h \
@@ -30,6 +30,7 @@ App/systems/servo_system.o: ../App/systems/servo_system.c \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart_ex.h \
  ../App/Inc/can_params.h ../App/Inc/can_system.h
 ../App/Inc/servo_system.h:
+../App/Inc/project_config.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h:
 ../Core/Inc/stm32l4xx_hal_conf.h:

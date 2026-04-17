@@ -1,4 +1,5 @@
 #include "can.h"
+#include "project_config.h"
 
 CAN_HandleTypeDef hcan1;
 
@@ -21,11 +22,11 @@ void MX_CAN1_Init(void)
    *
    * If your HSE / CAN clock is not 8 MHz, change these values.
    */
-  hcan1.Init.Prescaler = 1;
+  hcan1.Init.Prescaler = PROJECT_CAN_PRESCALER;
   hcan1.Init.Mode = CAN_MODE_NORMAL;
-  hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan1.Init.TimeSeg1 = CAN_BS1_5TQ;
-  hcan1.Init.TimeSeg2 = CAN_BS2_2TQ;
+  hcan1.Init.SyncJumpWidth = PROJECT_CAN_SJW;
+  hcan1.Init.TimeSeg1 = PROJECT_CAN_BS1;
+  hcan1.Init.TimeSeg2 = PROJECT_CAN_BS2;
 
   hcan1.Init.TimeTriggeredMode = DISABLE;
   hcan1.Init.AutoBusOff = DISABLE;

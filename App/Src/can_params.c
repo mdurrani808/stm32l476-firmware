@@ -1,4 +1,5 @@
 #include "can_params.h"
+#include "project_config.h"
 
 #include <string.h>
 #include <stddef.h>
@@ -9,12 +10,12 @@
  * Internal parameter store
  * ========================= */
 
-#define CANP_MAX_PARAMS      (256U)
-#define CANP_NAME_MAX        (64U)
+#define CANP_MAX_PARAMS      (PROJECT_CAN_PARAM_MAX_PARAMS)
+#define CANP_NAME_MAX        (PROJECT_CAN_PARAM_NAME_MAX)
 
 /* Hash table size should be a power of two. */
-#define CANP_HASH_SIZE       (512U)
-#define CANP_HASH_MAX_PROBE  (32U)
+#define CANP_HASH_SIZE       (PROJECT_CAN_PARAM_HASH_SIZE)
+#define CANP_HASH_MAX_PROBE  (PROJECT_CAN_PARAM_HASH_MAX_PROBE)
 
 #define CANP_INDEX_INVALID   (0xFFFFU)
 

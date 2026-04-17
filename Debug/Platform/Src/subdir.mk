@@ -5,8 +5,10 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../Platform/Src/adc.c \
 ../Platform/Src/can.c \
 ../Platform/Src/gpio.c \
+../Platform/Src/pwm.c \
 ../Platform/Src/stm32l4xx_hal_msp.c \
 ../Platform/Src/stm32l4xx_it.c \
 ../Platform/Src/syscalls.c \
@@ -16,8 +18,10 @@ C_SRCS += \
 ../Platform/Src/usart.c 
 
 OBJS += \
+./Platform/Src/adc.o \
 ./Platform/Src/can.o \
 ./Platform/Src/gpio.o \
+./Platform/Src/pwm.o \
 ./Platform/Src/stm32l4xx_hal_msp.o \
 ./Platform/Src/stm32l4xx_it.o \
 ./Platform/Src/syscalls.o \
@@ -27,8 +31,10 @@ OBJS += \
 ./Platform/Src/usart.o 
 
 C_DEPS += \
+./Platform/Src/adc.d \
 ./Platform/Src/can.d \
 ./Platform/Src/gpio.d \
+./Platform/Src/pwm.d \
 ./Platform/Src/stm32l4xx_hal_msp.d \
 ./Platform/Src/stm32l4xx_it.d \
 ./Platform/Src/syscalls.d \
@@ -45,7 +51,7 @@ Platform/Src/%.o Platform/Src/%.su Platform/Src/%.cyclo: ../Platform/Src/%.c Pla
 clean: clean-Platform-2f-Src
 
 clean-Platform-2f-Src:
-	-$(RM) ./Platform/Src/can.cyclo ./Platform/Src/can.d ./Platform/Src/can.o ./Platform/Src/can.su ./Platform/Src/gpio.cyclo ./Platform/Src/gpio.d ./Platform/Src/gpio.o ./Platform/Src/gpio.su ./Platform/Src/stm32l4xx_hal_msp.cyclo ./Platform/Src/stm32l4xx_hal_msp.d ./Platform/Src/stm32l4xx_hal_msp.o ./Platform/Src/stm32l4xx_hal_msp.su ./Platform/Src/stm32l4xx_it.cyclo ./Platform/Src/stm32l4xx_it.d ./Platform/Src/stm32l4xx_it.o ./Platform/Src/stm32l4xx_it.su ./Platform/Src/syscalls.cyclo ./Platform/Src/syscalls.d ./Platform/Src/syscalls.o ./Platform/Src/syscalls.su ./Platform/Src/sysmem.cyclo ./Platform/Src/sysmem.d ./Platform/Src/sysmem.o ./Platform/Src/sysmem.su ./Platform/Src/system_clock.cyclo ./Platform/Src/system_clock.d ./Platform/Src/system_clock.o ./Platform/Src/system_clock.su ./Platform/Src/system_stm32l4xx.cyclo ./Platform/Src/system_stm32l4xx.d ./Platform/Src/system_stm32l4xx.o ./Platform/Src/system_stm32l4xx.su ./Platform/Src/usart.cyclo ./Platform/Src/usart.d ./Platform/Src/usart.o ./Platform/Src/usart.su
+	-$(RM) ./Platform/Src/adc.cyclo ./Platform/Src/adc.d ./Platform/Src/adc.o ./Platform/Src/adc.su ./Platform/Src/can.cyclo ./Platform/Src/can.d ./Platform/Src/can.o ./Platform/Src/can.su ./Platform/Src/gpio.cyclo ./Platform/Src/gpio.d ./Platform/Src/gpio.o ./Platform/Src/gpio.su ./Platform/Src/pwm.cyclo ./Platform/Src/pwm.d ./Platform/Src/pwm.o ./Platform/Src/pwm.su ./Platform/Src/stm32l4xx_hal_msp.cyclo ./Platform/Src/stm32l4xx_hal_msp.d ./Platform/Src/stm32l4xx_hal_msp.o ./Platform/Src/stm32l4xx_hal_msp.su ./Platform/Src/stm32l4xx_it.cyclo ./Platform/Src/stm32l4xx_it.d ./Platform/Src/stm32l4xx_it.o ./Platform/Src/stm32l4xx_it.su ./Platform/Src/syscalls.cyclo ./Platform/Src/syscalls.d ./Platform/Src/syscalls.o ./Platform/Src/syscalls.su ./Platform/Src/sysmem.cyclo ./Platform/Src/sysmem.d ./Platform/Src/sysmem.o ./Platform/Src/sysmem.su ./Platform/Src/system_clock.cyclo ./Platform/Src/system_clock.d ./Platform/Src/system_clock.o ./Platform/Src/system_clock.su ./Platform/Src/system_stm32l4xx.cyclo ./Platform/Src/system_stm32l4xx.d ./Platform/Src/system_stm32l4xx.o ./Platform/Src/system_stm32l4xx.su ./Platform/Src/usart.cyclo ./Platform/Src/usart.d ./Platform/Src/usart.o ./Platform/Src/usart.su
 
 .PHONY: clean-Platform-2f-Src
 

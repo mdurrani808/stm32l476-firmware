@@ -1,36 +1,9 @@
 @echo off
-setlocal enabledelayedexpansion
+setlocal
 
-REM This BAT lives in: <repo>\tools\
-REM So repo root is one directory up from this script's folder:
-set "TOOLS_DIR=%~dp0"
-set "REPO_ROOT=%TOOLS_DIR%.."
-
-REM Input / output paths relative to repo root:
-set "IN_DBC=%REPO_ROOT%\app\dbc\file.dbc"
-set "OUT_C=%REPO_ROOT%\app\dbc\can_dbc_text.c"
-
-echo.
-echo === CAN DBC -> C string generator ===
-echo Repo root : %REPO_ROOT%
-echo Input     : %IN_DBC%
-echo Output    : %OUT_C%
-echo.
-
-REM Prefer the Python launcher if available; fall back to python.
-where py >NUL 2>&1
-if %errorlevel%==0 (
-    py -3 "%REPO_ROOT%\tools\dbc_to_c.py" "%IN_DBC%" "%OUT_C%"
-) else (
-    python "%REPO_ROOT%\tools\dbc_to_c.py" "%IN_DBC%" "%OUT_C%"
+if "%~1"=="" (
+  echo Usage: run_me_on_windows_for_dbc_to_c.bat path\to\file.dbc
+  exit /b 2
 )
 
-echo.
-if %errorlevel%==0 (
-    echo Success.
-) else (
-    echo FAILED with errorlevel %errorlevel%.
-)
-
-echo.
-pause
+python "%~dp0dbc_to_c.py" "%~1" "%~dp0..\App\dbc\can_dbc_text.c" --install-dbc "%~dp0..\App\dbc\file.dbc"
